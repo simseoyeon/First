@@ -1,0 +1,15 @@
+<!-- 제목title, 내용content -->
+{{>layouts/header}}
+<form class="container" action="/test/create" method="post">
+    <div class="mb-5">
+        <label class="form-label">제목</label>
+        <input type="text" class="form-control" name="title">
+    </div>
+    <div class="mb-5">
+        <label class="form-label">내용</label>
+        <input type="text" class="form-control" name="content">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a href="/tests">Back</a>
+</form>
+{{>layouts/footer}}
