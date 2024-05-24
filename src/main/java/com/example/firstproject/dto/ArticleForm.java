@@ -24,6 +24,8 @@ public class ArticleForm { //폼 데이터를 받아올 그릇
 //    }
 
     public Article toEntity() {
-        return  new Article(null, title, content);
+        //toEntity()는 DTO인 form객체를 엔티티 객체로 변환하는 역할
+        return new Article(null, title, content);
+        //폼 데이터를 담은 DTO 객체를 엔티티로 반환한다.
     }
 }
