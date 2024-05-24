@@ -1,5 +1,6 @@
 package com.example.firstproject.controller;
 
+import ch.qos.logback.core.model.Model;
 import com.example.firstproject.dto.MemberForm;
 import com.example.firstproject.entity.Member;
 import com.example.firstproject.repository.MemberRepository;
@@ -7,7 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -16,8 +20,8 @@ public class MemberController {
     private MemberRepository memberRepository; //memberRepository 객체 선언
 
     //mustache와 연결 -> member안에 있는 new이름의 mustache와 연결하겠다는 의미
-    @GetMapping("/members/new")
-    public String MemberForm(){
+    @GetMapping("/signup")
+    public String signUpPage(){
         return "members/new";  //-> member안에 있는 new이름의 mustache와 연결하겠다는 의미
     }
     //form데이터 받기
@@ -36,5 +40,15 @@ public class MemberController {
 //        System.out.println(saved.toString());
         return "";
     }
-
+    @GetMapping("/member/{id}")
+    public String show(@PathVariable Long Id, Model model ){
+        log.info("id = " + Id);
+        Member memberEntity = memberRepository.findById(Id).orElse(null);
+        model.addAttribute("member", memberEntity);
+        return "members/show";
+    }
+    public String index(Model model){
+        List<Member> memberEntityList = memberRepository.findAll();
+        return "members/index";
+    }
 }
