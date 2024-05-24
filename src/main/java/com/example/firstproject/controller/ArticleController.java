@@ -67,6 +67,7 @@ public class ArticleController {
             //findAll()메서드를 통해 해당 리포지터리에 있는 모든 데이터를 가져옴
             //가져 온 모든 데이터는 articleEntityList에 저장
             //이때 데이터 묶음의 타입은 Article타입
+            //findAll()메서드가 반환하는 데이터 타입은 Iterable인데 작성 타입은 List라서 서로 불일치한다는 메서드
         //2. 모델에 데이터 등록하기
         model.addAttribute("articleList", articleEntityList);
         //3. 뷰 페이지 설정하기
