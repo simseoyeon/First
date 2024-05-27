@@ -32,11 +32,15 @@ public class ArticleController {
         //System.out.println(article.toString()); //DTO가 엔티티로 잘 변환되는지 확인 출력
         //2. 리포지토리로 엔티티를 DB에 저장
         Article saved = articleRepository.save(article);
+        //article은 Entity에 들어 있는 객체
+        //saved객체에는 articleRepository에서 연동된 DB가 저장된다.
         log.info(saved.toString());
 //        System.out.println(saved.toString());
-        return "";
+        return "redirect:/articles/" + saved.getId(); //리다이렉트를 작성할 위치
+        //id값을 가져오기 위해 saved객체 이용(id에 따라 URL주소가 달라지도록 +연산자 사용)
     }
 
+    //상세페이지를 받는 컨트롤러
     @GetMapping("/articles/{id}") //데이터 조회 요청 접수
         //URL요청 받는 GetMapping
         //중괄호 안에 id를 작성하면 id는 변수로 사용 가능하다.
@@ -58,7 +62,7 @@ public class ArticleController {
             //id로 DB에서 조회한 데이터는 모델에 article이라는 이름으로 등록
         //3. 뷰 페이지 반환하기
         return "articles/show";
-            //모델에 등록한 데이터를 뷰 페이지에서 사용할 수 있게 설정
+            //모델에 등록한 데이터를 뷰 페이지에서 사용할 수 있게 설정 - mustache파일 사용
     }
     @GetMapping("/articles")
     public String index(Model model){
@@ -72,5 +76,31 @@ public class ArticleController {
         model.addAttribute("articleList", articleEntityList);
         //3. 뷰 페이지 설정하기
         return "articles/index";
+    }
+    @GetMapping("/articles/{id}/edit")//2.URL요청 접수 - show.mustache에 있는 edit의 링크
+    public String edit(@PathVariable Long id, Model model){  //1.메서드 생성 및 뷰 페이지 설정 4. id를 매개변수로 받아오기
+        //5.모델 객체 받아오기
+        //3.DB에서 수정할 데이터 가져오기
+        Article articleEntity = articleRepository.findById(id).orElse(null);
+        //6.모델에 데이터 등록하기
+        model.addAttribute("article", articleEntity);
+        //1.뷰 페이지 설정하기
+        return "articles/edit";
+    }
+    @PostMapping("/articles/update")
+    public String update(ArticleForm form){
+        log.info(form.toString());
+        //1.DTO를 엔티티로 변환하기
+        Article articleEntity = form.toEntity(); //DTO를 엔티티로 변환하기
+        log.info(articleEntity.toString()); //엔티티로 잘 변환됐는지 로그 찍기
+        //2.엔티티를 DB에 저장하기 - 기존 데이터를 바꾼다.
+        //2-1. DB에서 기존 데이터 가져오기
+        Article target = articleRepository.findById(articleEntity.getId()).orElse(null);
+        //2-2. 기존 데이터 값을 갱신하기
+        if(target != null){   //수정 시 입력 대상의 존재 여부를 검증하도록 if 조건문
+            articleRepository.save(articleEntity); //엔티티를 DB에 저장(갱신)
+        }
+        //3.수정 결과 페이지로 리다이렉트하기
+        return "redirect:/articles/" + articleEntity.getId();
     }
 }

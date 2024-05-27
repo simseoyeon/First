@@ -1,12 +1,12 @@
 package com.example.firstproject.controller;
 
-import ch.qos.logback.core.model.Model;
 import com.example.firstproject.dto.MemberForm;
 import com.example.firstproject.entity.Member;
 import com.example.firstproject.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,36 +19,35 @@ public class MemberController {
     @Autowired
     private MemberRepository memberRepository; //memberRepository 객체 선언
 
-    //mustache와 연결 -> member안에 있는 new이름의 mustache와 연결하겠다는 의미
+
     @GetMapping("/signup")
     public String signUpPage(){
-        return "members/new";  //-> member안에 있는 new이름의 mustache와 연결하겠다는 의미
+        return "members/new";
     }
-    //form데이터 받기
-    //mushtache에서 /join으로 post방식으로 받겠다고 작성
+
     @PostMapping("/join")
-    public String JoinMember(MemberForm form){ //폼 데이터를 DTO로 받기
+    public String JoinMember(MemberForm form){
         log.info(form.toString());
-//        System.out.println(form.toString()); //DTO에 폼 데이터가 잘 담겼는지 확인
-        //1. DTO를 엔티티로 변환
+//        System.out.println(form.toString());
         Member member = form.toEntity();
         log.info(form.toString());
 //        System.out.println(member.toString());
-        //2. 라퍼지토리로 엔티티를 DB에 저장
-        Member saved = memberRepository.save(member); //member 엔티티에 저장해 saved 객체에 반환
+        Member saved = memberRepository.save(member);
         log.info(saved.toString());
 //        System.out.println(saved.toString());
-        return "";
+        return "redirect:/member/" + saved.getId();
     }
     @GetMapping("/member/{id}")
-    public String show(@PathVariable Long Id, Model model ){
-        log.info("id = " + Id);
-        Member memberEntity = memberRepository.findById(Id).orElse(null);
+    public String show(@PathVariable Long id, Model model ){
+        log.info("id = " + id);
+        Member memberEntity = memberRepository.findById(id).orElse(null);
         model.addAttribute("member", memberEntity);
         return "members/show";
     }
+    @GetMapping("/members")
     public String index(Model model){
         List<Member> memberEntityList = memberRepository.findAll();
+        model.addAttribute("memberList", memberEntityList);
         return "members/index";
     }
 }
