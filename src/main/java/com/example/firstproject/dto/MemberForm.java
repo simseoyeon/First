@@ -7,6 +7,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class MemberForm {
+    private Long id;
     private String email;   //email을 받을 필드
     private String password;  //password를 받을 필드
 
@@ -24,6 +25,6 @@ public class MemberForm {
 //                '}';
 //    }
     public Member toEntity() {
-        return new Member(null, email, password); //생성자 입력 양식에 맞게 작성
+        return new Member(id, email, password); //생성자 입력 양식에 맞게 작성
     }
 }

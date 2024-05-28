@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class ArticleController {
         //3. 뷰 페이지 설정하기
         return "articles/index";
     }
+    //수정페이지 만들고 기존 데이터 불러오기
     @GetMapping("/articles/{id}/edit")//2.URL요청 접수 - show.mustache에 있는 edit의 링크
     public String edit(@PathVariable Long id, Model model){  //1.메서드 생성 및 뷰 페이지 설정 4. id를 매개변수로 받아오기
         //5.모델 객체 받아오기
@@ -102,5 +104,20 @@ public class ArticleController {
         }
         //3.수정 결과 페이지로 리다이렉트하기
         return "redirect:/articles/" + articleEntity.getId();
+    }
+    //Delete 요청을 받아 데이터 삭제
+    @GetMapping("/articles/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes rttr){
+        log.info("삭제 요청이 들어왔습니다!!");
+        //1.삭제할 대상 가져오기 - Repository에서 삭제할 데이터 찾아서 target에 저장
+        Article target = articleRepository.findById(id).orElse(null);
+        log.info(target.toString()); //target에 데이터가 저장되었는지 확인하는 로깅
+        //2.대상 엔티티 삭제하기
+        if (target != null){
+            articleRepository.delete(target); //delete로 대상 삭제
+            rttr.addFlashAttribute("msg", "삭제됐습니다!"); //리다이렉트 시점에 한 번만 사용할 데이터 등록가능(휘발성 데이터)
+        }
+        //3.결과 페이지로 리다이렉트하기 - 게시글 삭제 후 목록페이지로 돌아가기
+        return "redirect:/articles";
     }
 }

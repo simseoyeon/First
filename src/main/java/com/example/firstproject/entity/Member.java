@@ -30,6 +30,10 @@ public class Member {
         return id;
     }
 
+    //public Long getId() {
+    //    return id;
+    //}
+
     //member생성자 추가
 //    public Member(Long id, String email, String password) {
 //        this.Id = id;
