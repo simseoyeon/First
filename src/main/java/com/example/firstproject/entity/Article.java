@@ -34,6 +34,13 @@ public class Article {
     public Long getId() { //데이터 타입을 String -> Long타입으로 변경
         return id;
     }
+
+    public void patch(Article article) {
+        if(article.title != null)
+            this.title = article.title;
+        if(article.content !=null)
+            this.content = article.content;
+    }
     //Article 생성자 추가
 
 
