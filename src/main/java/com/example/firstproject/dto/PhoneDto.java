@@ -1,17 +1,18 @@
 package com.example.firstproject.dto;
 
-import com.example.firstproject.entity.Coffee;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 
 @AllArgsConstructor
 @ToString
-public class CoffeeDto {
+public class PhoneDto {
     private Long id;
+
+    private String brand;
     private String name;
     private String price;
 
-    public Coffee toEntity() {
-        return new Coffee(id, name, price);
-    }
+//    public Phone toEntity(){
+//        return new Phone(id, brand, name, price);
+//    }
 }

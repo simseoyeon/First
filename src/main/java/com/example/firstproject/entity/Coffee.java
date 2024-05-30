@@ -1,25 +1,24 @@
 package com.example.firstproject.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Getter
 @Entity
 public class Coffee {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column
     private String name;
     @Column
-    private int price;
+    private String price;
 
     public Long getId() {
         return id;
@@ -28,5 +27,7 @@ public class Coffee {
     public void patch(Coffee coffee) {
         if(coffee.name != null)
             this.name = coffee.name;
+        if(coffee.price != null)
+            this.price = coffee.price;
     }
 }
