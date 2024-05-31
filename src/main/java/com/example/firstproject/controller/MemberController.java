@@ -21,12 +21,12 @@ public class MemberController {
     private MemberRepository memberRepository; //memberRepository 객체 선언
 
 
-    @GetMapping("/signup") //회원가입 화면
+    @GetMapping("/signup") //로그인 화면
     public String signUpPage(){
         return "members/new";
     }
 
-    @PostMapping("/join")
+    @PostMapping("/join") //로그인 완료 후 화면
     public String JoinMember(MemberForm form){
         log.info(form.toString());
 //        System.out.println(form.toString());
@@ -38,7 +38,7 @@ public class MemberController {
 //        System.out.println(saved.toString());
         return "redirect:/member/" + saved.getId();
     }
-    @GetMapping("/member/{id}")
+    @GetMapping("/member/{id}") //id에 따른 화면
     public String show(@PathVariable Long id, Model model ){
         log.info("id = " + id);
         Member memberEntity = memberRepository.findById(id).orElse(null);
