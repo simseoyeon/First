@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DataJpaTest
+@DataJpaTest  //
 class CommentRepositoryTest {
     @Autowired
     CommentRepository commentRepository;
@@ -22,9 +22,11 @@ class CommentRepositoryTest {
     void findByArticleId() {
         //Case 1: 4번 게시글의 모든 댓글 조회
         {
-            //1.입력데이터준비
+            //1.입력데이터준비 - 4번 게시글
             Long articleId = 4L;
+
             //2.실제데이터
+            List<Comment> comments = commentRepository.findByArticleId(articleId);
 
             //3.예상데이터
             Article article = new Article(4L, "당신의 인생 영화는?", "댓글 고");
@@ -34,25 +36,102 @@ class CommentRepositoryTest {
             Comment c = new Comment(3L, article, "Choi", "쇼생크 탈출");
             List<Comment> expected = Arrays.asList(a, b, c);
 
-            List<Comment> comments = commentRepository.findByArticleId(articleId);
-
             //4.비교 및 검증
-
             assertEquals(expected.toString(), comments.toString(), "4번 글 댓글 모두 출력.");
         }
         //Case2: 1번 게시글의 모든 댓글 조회
         {
             Long articleId = 1L;
-            List<Comment> comments = commentRepository.findByArticleId(articleId);
+            List<Comment> comments = commentRepository.findByArticleId(articleId); //실제 데이터
             Article article = new Article(1L, "가가가가", "1111");
             List<Comment> expected = Arrays.asList();
             assertEquals(expected.toString(), comments.toString(),"1번 글은 댓글이 없음.");
         }
+        //Case3: 9번 게시글의 모든 댓글 조회
+        {
+            Long articleId = 9L;
+            List<Comment> comments = commentRepository.findByArticleId(articleId);
+            Article article = null;
+            List<Comment> expected = Arrays.asList();
+            assertEquals(expected.toString(), comments.toString(),"9번 게시글은 없으므로 댓글도 없음.");
+        }
+        //Case4: 999번 게시글의 모든 댓글 조회
+        {
+            Long articleId = 999L;
+            List<Comment> comments = commentRepository.findByArticleId(articleId);
+            Article article = null;
+            List<Comment> expected = Arrays.asList();
+            assertEquals(expected.toString(), comments.toString(),"999번 게시글은 없으므로 댓글도 없음.");
+        }
+        //Case5: -1번 게시글의 모든 댓글 조회
+        {
+            Long articleId = -1L;
+            List<Comment> comments = commentRepository.findByArticleId(articleId);
+            Article article = null;
+            List<Comment> expected = Arrays.asList();
+            assertEquals(expected.toString(), comments.toString(),"-1번 게시글은 없으므로 댓글도 없음.");
+        }
+
 
     }
 
     @Test
+    @DisplayName("특정 닉네임의 모든 댓글 조회")
     void findByNickname() {
+        //Case 1: "Park"의 모든 댓글 조회
+        {
+            //1. 입력 데이터 준비
+            String nickname = "Park";
+            //2. 실제 데이터
+            List<Comment> comments = commentRepository.findByNickname(nickname);
+            //3. 예상 데이터
+            Comment a = new Comment(1L, new Article(4L, "당신의 인생 영화는?", "댓글 고"), nickname, "굿 윌 헌팅");
+            Comment b = new Comment(4L, new Article(5L, "당신의 소울 푸드는?", "댓글 고고"), nickname, "치킨");
+            Comment c = new Comment(7L, new Article(6L, "당신의 취미는?", "댓글 고고고"), nickname, "조깅");
 
+            List<Comment> expected = Arrays.asList(a, b, c);
+
+            //4. 비교 및 검증
+            assertEquals(comments.toString(), expected.toString(), "Park의 모든 댓글을 출력!");
+        }
+        //Case 2: "Kim"의 모든 댓글 조회
+        {
+            //1. 입력 데이터 준비
+            String nickname = "Kim";
+            //2. 실제 데이터
+            List<Comment> comments = commentRepository.findByNickname(nickname);
+            //3. 예상 데이터
+            Comment a = new Comment(2L, new Article(4L, "당신의 인생 영화는?", "댓글 고"), nickname, "아임 엠 샘");
+            Comment b = new Comment(5L, new Article(5L, "당신의 소울 푸드는?", "댓글 고고"), nickname, "샤브샤브");
+            Comment c = new Comment(8L, new Article(6L, "당신의 취미는?", "댓글 고고고"), nickname, "유튜브 시청");
+
+            List<Comment> expected = Arrays.asList(a, b, c);
+
+            //4. 비교 및 검증
+            assertEquals(comments.toString(), expected.toString(), "Kim의 모든 댓글을 출력!");
+        }
+        //Case 3: null의 모든 댓글 조회(특정 닉네임의 입력값이 null일 때)
+        {
+            //1. 입력 데이터 준비
+            String nickname = "null";
+            //2. 실제 데이터
+            List<Comment> comments = commentRepository.findByNickname(nickname);
+            //3. 예상 데이터
+            List<Comment> expected = Arrays.asList();
+            //4. 비교 및 검증
+            assertEquals(comments.toString(), expected.toString(), "Kim의 모든 댓글을 출력!");
+        }
+        //Case 4: ""의 모든 댓글 조회(특정 닉네임의 입력값이 없을 때)
+        {
+            //1. 입력 데이터 준비
+            String nickname = "";
+            //2. 실제 데이터
+            List<Comment> comments = commentRepository.findByNickname(nickname);
+            //3. 예상 데이터
+            List<Comment> expected = Arrays.asList();
+
+            //4. 비교 및 검증
+            assertEquals(comments.toString(), expected.toString(), "의 모든 댓글을 출력!");
+        }
     }
 }
