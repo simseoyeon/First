@@ -1,8 +1,10 @@
 package com.example.firstproject.controller;
 
 import com.example.firstproject.dto.ArticleForm;
+import com.example.firstproject.dto.CommentDto;
 import com.example.firstproject.entity.Article;
 import com.example.firstproject.repository.ArticleRepository;
+import com.example.firstproject.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,8 @@ import java.util.List;
 public class ArticleController {
     @Autowired //해당 어노테이션을 붙이면 스프링 부트가 미리 생성해 놓은 객체를 가져다가 연결해줌 - 의존성 주입
     private ArticleRepository articleRepository; //articleRepository 객체 선언
+    @Autowired
+    private CommentService commentService;
     @GetMapping("/articles/new")
     public String newArticleForm() {
         return "articles/new";
@@ -51,6 +55,7 @@ public class ArticleController {
         log.info("id = " + id);    //id를 잘 받았는지 확인하는 로그 찍기
         //1. id를 조회해 데이터 가져오기
         Article articleEntity = articleRepository.findById(id).orElse(null);
+        List<CommentDto> commentDtos = commentService.comments(id);
             //DB에서 데이터를 가져오는 주체 : 리파지터리
             //findById(): JPA의 CrudRepository가 제공하는 메서드
                 // -> 특정 엔티티의 id 값을 기준으로 데이터를 찾아 Optional 타입으로 반환
@@ -60,6 +65,7 @@ public class ArticleController {
                 //-> 조회한 결과 값이 있으면 articleEntity 변수에 값을 넣고, 없으면 null을 저장
         //2. 모델에 데이터 등록하기 -> why? MVC 패턴에 따라 조회한 데이터를 뷰 페이지에 사용하기 위해
         model.addAttribute("article", articleEntity);
+        model.addAttribute("commentDtos", commentDtos);
             //id로 DB에서 조회한 데이터는 모델에 article이라는 이름으로 등록
         //3. 뷰 페이지 반환하기
         return "articles/show";
